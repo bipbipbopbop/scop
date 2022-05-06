@@ -75,12 +75,9 @@ clean:
 	$(RM) $(OBJ)
 	$(RMDIR) $(OBJ_DIRS)
 	$(RM) $(DEP_FILES)
-	@make -C $(LIBFT_PATH) clean > /dev/null ||:
 
 fclean: clean
 	$(RM) $(NAME)
-	@make -C $(LIBFT_PATH) fclean > /dev/null ||:
-
 lclean: fclean
 	$(RMDIR) $(LIB)
 
