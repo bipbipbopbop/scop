@@ -1,0 +1,10 @@
+.vscode
+
+.bin/
+resources/
+**/*.d
+
+library/*
+!library/*.zip
+
+scop
