@@ -39,7 +39,8 @@ MKDIR := mkdir -p
 
 
 # Files
-SRC_NAME := main.cpp
+SRC_NAME :=	main.cpp \
+			parsing/obj_wavefront/Lexer.cpp
 
 SRC :=	$(addprefix $(SRC_PATH)/, $(SRC_NAME))
 OBJ :=	$(addprefix $(OBJ_PATH)/, $(SRC_NAME:.cpp=.o))

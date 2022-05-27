@@ -4,10 +4,8 @@
 #include <string>
 #include <utility>
 
-#include "./data.hpp"
-
 namespace Lexer {
-enum class TokenType { kVert, kVertText, kVertNorm, kFace };
+enum class TokenType { kUnknown = 0, kVert, kVertText, kVertNorm, kFace };
 
 // first is the token type, second is the lex'd line
 using Token = std::pair<TokenType, std::string>;
