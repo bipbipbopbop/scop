@@ -1,5 +1,6 @@
 #include "./Parser.hpp"
 
+#include <algorithm>
 #include <functional>
 #include <map>
 #include <sstream>
@@ -64,19 +65,51 @@ PToken parseVText(LToken token) {
   return {new VTexture(std::move(result)), token.first};
 };
 
+static FaceIndex buildFaceIndex(std::string indices) {
+  const ssize_t slash_nb = std::count(indices.cbegin(), indices.cend(), '/');
+
+  switch (slash_nb) {
+    case 0:
+      // format: "v"
+      return {std::stol(indices), 0, 0};
+    case 1:
+      // format: "v/vt"
+      return {std::stol(indices.substr(0, indices.find_first_of('/'))),
+              std::stol(indices.substr(indices.find_last_of('/') + 1)), 0};
+    case 2:
+      if (indices.find("//") != std::string::npos) {
+        // format: "v//vn"
+        return {std::stol(indices.substr(0, indices.find_first_of('/'))), 0,
+                std::stol(indices.substr(indices.find_last_of('/') + 1))};
+      } else {
+        // format: "v/vt/vn"
+        return {std::stol(indices.substr(0, indices.find_first_of('/'))),
+                std::stol(indices.substr(indices.find_first_of('/'), indices.find_last_of('/'))),
+                std::stol(indices.substr(indices.find_last_of('/') + 1))};
+      }
+    default:
+      return {0, 0, 0};
+  };
+};
+
 PToken parseFace(LToken token) {
   std::istringstream stream(token.second);
   Face result;
   std::string sink;
 
-  // todo: https://github.com/julienhache/mytinyrenderer/blob/master/src/meshobj.cpp#L97
-}
+  stream >> sink;  // first word is the identifier
+  while (!stream.eof()) {
+    stream >> sink;
+    result.push_back(buildFaceIndex(sink));
+  }
+  return {new Face(std::move(result)), token.first};
+};
 
 using ParserF = PToken(LToken);
 static std::map<Lexer::TokenType, ParserF *> parser = {
     {Lexer::TokenType::kUnknown, nullptr},     {Lexer::TokenType::kVert, parseVert},
     {Lexer::TokenType::kVertNorm, parseVNorm}, {Lexer::TokenType::kVertText, parseVText},
-    {Lexer::TokenType::kFace, nullptr},
+    {Lexer::TokenType::kFace, parseFace},
 };
 
 PToken Parser::parse(LToken token) {

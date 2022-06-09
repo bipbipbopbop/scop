@@ -17,9 +17,7 @@ using Vertex = Array4D<float>;
 using VTexture = Array3D<float>;
 using VNormal = Array3D<float>;
 
-class Face : std::vector<Vertex> {
- public:
-  static const int max_elem = 4;
-};
+using FaceIndex = Array3D<ssize_t>;
+using Face = std::vector<FaceIndex>;
 
 #endif  // PARSING_OBJ_WAVEFRONT_DATA_HPP
