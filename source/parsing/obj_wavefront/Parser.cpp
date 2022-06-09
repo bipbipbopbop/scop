@@ -41,6 +41,9 @@ PToken parseVert(LToken token) {
   if (!stream.eof()) {
     stream >> result[3];
   }
+  if (stream.failbit || !stream.eof()) {
+    return PToken();
+  }
   return {new Vertex(std::move(result)), token.first};
 };
 
@@ -50,6 +53,9 @@ PToken parseVNorm(LToken token) {
   std::string sink;
 
   stream >> sink >> result[0] >> result[1] >> result[2];  // first word is the identifier
+  if (stream.failbit || !stream.eof()) {
+    return PToken();
+  }
   return {new VNormal(std::move(result)), token.first};
 };
 
@@ -58,9 +64,15 @@ PToken parseVText(LToken token) {
   VTexture result{0., 0., 0.};
   std::string sink;
 
-  stream >> sink >> result[0] >> result[1];  // first word is the identifier
+  stream >> sink >> result[0];  // first word is the identifier
+  if (!stream.eof()) {
+    stream >> result[1];
+  }
   if (!stream.eof()) {
     stream >> result[2];
+  }
+  if (stream.failbit || !stream.eof()) {
+    return PToken();
   }
   return {new VTexture(std::move(result)), token.first};
 };
@@ -101,6 +113,9 @@ PToken parseFace(LToken token) {
   while (!stream.eof()) {
     stream >> sink;
     result.push_back(buildFaceIndex(sink));
+  }
+  if (stream.failbit || !stream.eof()) {
+    return PToken();
   }
   return {new Face(std::move(result)), token.first};
 };

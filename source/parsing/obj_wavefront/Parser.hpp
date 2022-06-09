@@ -9,8 +9,8 @@
 namespace Parser {
 struct Token {
   ~Token();
-  void *data;
-  const Lexer::TokenType type = Lexer::TokenType::kUnknown;
+  void *data = nullptr;
+  Lexer::TokenType type = Lexer::TokenType::kUnknown;
 };
 
 Token parse(Lexer::Token);
