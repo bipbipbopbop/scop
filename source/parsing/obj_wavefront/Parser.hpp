@@ -8,6 +8,7 @@
 
 namespace Parser {
 struct Token {
+  ~Token();
   void *data;
   const Lexer::TokenType type = Lexer::TokenType::kUnknown;
 };
